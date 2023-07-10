@@ -8,6 +8,9 @@ RUN apt-get update && \
     curl \
     wget \
     git \
+    vim \
+    php \
+    cron \
     ffmpeg \
     libssl-dev \
     libx11-dev \
@@ -22,6 +25,8 @@ RUN apt-get update && \
     xinit \
     ttf-dejavu-core \
     dbus-x11
+
+RUN sed -i '/error_reporting =/d' /etc/php/7.3/cli/php.ini
 
 # Install Node.js and npm
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
