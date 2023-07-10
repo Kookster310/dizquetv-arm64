@@ -40,12 +40,6 @@ RUN mkdir -p /root/.config/openbox && \
     echo 'xrandr -s 1280x720' >> /root/.config/openbox/autostart && \
     echo 'x11vnc -forever -passwd password' >> /root/.config/openbox/autostart
 
-# Download and install DizqueTV
-RUN cd /opt && git clone https://github.com/vexorian/dizquetv.git 
-RUN cd /opt/dizquetv && git checkout 1.5.0 && \
-    npm install && \
-    npm run build
-
 # Expose ports 8000 and 8001
 EXPOSE 8000
 EXPOSE 8001
