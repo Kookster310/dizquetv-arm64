@@ -1,6 +1,9 @@
 # Base image
 FROM arm64v8/debian:buster
 
+ENV TVTIMEZONE=America\/New_York
+ENV LINEUPID=USA-OTA30236
+
 # Install dependencies
 # Set a different package repository mirror
 RUN apt-get update && \
@@ -9,6 +12,8 @@ RUN apt-get update && \
     wget \
     git \
     vim \
+    nginx \
+    supervisor \
     php \
     cron \
     ffmpeg \
@@ -26,8 +31,6 @@ RUN apt-get update && \
     ttf-dejavu-core \
     dbus-x11
 
-RUN sed -i '/error_reporting =/d' /etc/php/7.3/cli/php.ini
-
 # Install Node.js and npm
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
     apt-get install -y nodejs
@@ -43,9 +46,16 @@ RUN cd /opt/dizquetv && git checkout 1.5.0 && \
     npm install && \
     npm run build
 
-# Expose port 8000
+# Expose ports 8000 and 8001
 EXPOSE 8000
+EXPOSE 8001
+
+COPY tvtv2xmltv-config /etc
+COPY docker-entrypoint.sh /etc/nginx
+RUN chmod +x /etc/nginx/docker-entrypoint.sh
 
 # Start dizqueTV
 WORKDIR /opt/dizquetv
-CMD ["npm", "start"]
+CMD ["/bin/bash"]
+
+ENTRYPOINT ["/etc/nginx/docker-entrypoint.sh"]
