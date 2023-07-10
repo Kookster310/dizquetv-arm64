@@ -1,0 +1,14 @@
+version: '3.3'
+
+services:
+  dizquetv:
+    image: kookster310/dizquetv-arm64:latest
+    hostname: dizquetv
+    restart: always
+    volumes:
+      - dizquetv:/opt/dizquetv
+    ports:
+      - '8000:8000'
+
+volumes:
+  dizquetv:
