@@ -21,7 +21,7 @@ spec:
             - containerPort: 8001
           env:
             - name: TVTIMEZONE
-              value: America/New_York
+              value: America\/New_York
             - name: LINEUPID
               value: USA-OTA30236
           volumeMounts:
