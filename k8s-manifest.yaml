@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dizquetv-deployment
+  namespace: dizque-ns
+spec:
+  selector:
+    matchLabels:
+      app: dizquetv
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dizquetv
+    spec:
+      containers:
+        - name: dizquetv
+          image: kookster310/dizquetv-arm64:latest
+          ports:
+            - containerPort: 8000
+            - containerPort: 8001
+          env:
+            - name: TVTIMEZONE
+              value: America/New_York
+            - name: LINEUPID
+              value: USA-OTA30236
+          volumeMounts:
+            - name: dizquetv-volume
+              mountPath: /opt/dizquetv
+      volumes:
+        - name: dizquetv-volume
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dizquetv-service
+  namespace: dizque-ns
+spec:
+  selector:
+    app: dizquetv
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dizquetv-ingress-8000
+  namespace: dizque-ns
+spec:
+  rules:
+    - host: example.com  # Update with your actual domain
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: dizquetv-service
+                port:
+                  number: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dizquetv-ingress-8001
+  namespace: dizque-ns
+spec:
+  rules:
+    - host: example.com  # Update with your actual domain
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: dizquetv-service
+                port:
+                  number: 8001
+
